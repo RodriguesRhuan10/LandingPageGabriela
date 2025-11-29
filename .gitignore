@@ -1,0 +1,33 @@
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs e editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Node modules (se houver)
+node_modules/
+
+# Arquivos de backup
+*.bak
+*.backup
+
+# Scripts temporários
+setup-git.ps1
+INSTRUCOES-GITHUB.md
+
+# Assets temporários do Cursor
+assets/
