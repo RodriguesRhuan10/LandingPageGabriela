@@ -118,6 +118,9 @@ function initMobileCarousel() {
     const dots = dotsContainer.querySelectorAll('.carousel-dot');
 
     function updateCarousel() {
+        // Garantir que a transição está ativa
+        track.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        
         const translateX = -currentIndex * 100;
         track.style.transform = `translateX(${translateX}%)`;
         
@@ -126,8 +129,12 @@ function initMobileCarousel() {
             dot.classList.toggle('active', index === currentIndex);
         });
     }
+    
+    // Inicializar carrossel na posição correta
+    updateCarousel();
 
     function goToSlide(index) {
+        // Garantir que o índice está dentro dos limites
         if (index < 0) {
             currentIndex = totalSlides - 1;
         } else if (index >= totalSlides) {
@@ -135,22 +142,25 @@ function initMobileCarousel() {
         } else {
             currentIndex = index;
         }
+        // Forçar atualização
         updateCarousel();
     }
 
     function nextSlide() {
-        goToSlide(currentIndex + 1);
+        const newIndex = (currentIndex + 1) % totalSlides;
+        goToSlide(newIndex);
     }
 
     function prevSlide() {
-        goToSlide(currentIndex - 1);
+        const newIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+        goToSlide(newIndex);
     }
 
     // Event listeners
     if (nextBtn) nextBtn.addEventListener('click', nextSlide);
     if (prevBtn) prevBtn.addEventListener('click', prevSlide);
 
-    // Swipe para mobile
+    // Swipe para mobile - versão simplificada e corrigida
     let startX = 0;
     let currentX = 0;
     let isDragging = false;
@@ -158,12 +168,12 @@ function initMobileCarousel() {
     track.addEventListener('touchstart', (e) => {
         startX = e.touches[0].clientX;
         isDragging = true;
-    });
+    }, { passive: true });
 
     track.addEventListener('touchmove', (e) => {
         if (!isDragging) return;
         currentX = e.touches[0].clientX;
-    });
+    }, { passive: true });
 
     track.addEventListener('touchend', () => {
         if (!isDragging) return;
@@ -174,12 +184,14 @@ function initMobileCarousel() {
 
         if (Math.abs(diffX) > threshold) {
             if (diffX > 0) {
+                // Swipe para direita = próximo slide
                 nextSlide();
             } else {
+                // Swipe para esquerda = slide anterior
                 prevSlide();
             }
         }
-    });
+    }, { passive: true });
 
     // Auto-play opcional (descomente se quiser)
     // let autoPlayInterval = setInterval(nextSlide, 5000);
