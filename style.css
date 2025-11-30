@@ -910,6 +910,131 @@ body::before {
     position: relative;
 }
 
+/* Carrossel visível no desktop também */
+.desktop-carousel {
+    display: block;
+    margin-top: 60px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Ajustes específicos para desktop */
+@media (min-width: 1025px) {
+    .desktop-carousel {
+        margin-top: 60px;
+        padding: 0;
+    }
+    
+    .desktop-carousel .carousel-container {
+        min-height: 550px;
+        max-height: 650px;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0 auto;
+        border-radius: 0;
+        overflow: visible;
+        max-width: 1600px;
+        position: relative;
+    }
+    
+    .desktop-carousel .carousel-track {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        position: relative;
+    }
+    
+    .desktop-carousel .carousel-slide {
+        flex: 0 0 30%;
+        min-width: 30%;
+        max-width: 30%;
+        min-height: 550px;
+        max-height: 650px;
+        background: transparent;
+        padding: 0 15px;
+        margin: 0;
+        overflow: visible;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.6s ease, transform 0.6s ease, flex 0.6s ease;
+        opacity: 0;
+        transform: scale(0.9);
+        position: relative;
+        pointer-events: none;
+    }
+    
+    .desktop-carousel .carousel-slide.active,
+    .desktop-carousel .carousel-slide.prev,
+    .desktop-carousel .carousel-slide.next {
+        opacity: 0.4;
+        pointer-events: auto;
+    }
+    
+    .desktop-carousel .carousel-slide.active {
+        opacity: 1;
+        transform: scale(1);
+        z-index: 2;
+        flex: 0 0 40%;
+        min-width: 40%;
+        max-width: 40%;
+    }
+    
+    .desktop-carousel .carousel-slide.prev,
+    .desktop-carousel .carousel-slide.next {
+        opacity: 0.35;
+        transform: scale(0.85);
+    }
+    
+    .desktop-carousel .carousel-slide img {
+        width: 100%;
+        height: auto;
+        max-height: 600px;
+        max-width: 100%;
+        object-fit: contain;
+        object-position: center;
+        border-radius: 12px;
+        background: transparent;
+        margin: 0;
+        padding: 0;
+        display: block;
+    }
+    
+    .desktop-carousel .carousel-controls {
+        padding: 12px 20px;
+        background: var(--beige-light);
+        border-top: 1px solid var(--border-color);
+        border-radius: 0 0 12px 12px;
+        margin-top: -1px;
+        gap: 12px;
+    }
+    
+    .desktop-carousel .carousel-btn {
+        width: 42px;
+        height: 42px;
+    }
+    
+    .desktop-carousel .carousel-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .desktop-carousel .carousel-dot {
+        width: 10px;
+        height: 10px;
+    }
+    
+    .desktop-carousel .carousel-dot.active {
+        width: 12px;
+        height: 12px;
+    }
+}
+
 .carousel-container {
     position: relative;
     width: 100%;
@@ -920,6 +1045,8 @@ body::before {
     border: 1px solid var(--border-color);
     min-height: 400px;
     max-height: 500px;
+    padding: 0;
+    margin: 0;
 }
 
 .carousel-track {
@@ -968,18 +1095,18 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px;
+    padding: 12px 16px;
     background: var(--beige-light);
     border-top: 1px solid var(--border-color);
-    gap: 15px;
+    gap: 12px;
 }
 
 .carousel-btn {
     background: var(--chocolate);
     color: var(--cream);
     border: none;
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -989,13 +1116,13 @@ body::before {
     flex-shrink: 0;
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
-    box-shadow: 0 2px 8px rgba(93, 64, 55, 0.2);
+    box-shadow: 0 2px 6px rgba(93, 64, 55, 0.15);
 }
 
 .carousel-btn:hover {
     background: var(--brown-dark);
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(93, 64, 55, 0.3);
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(93, 64, 55, 0.25);
 }
 
 .carousel-btn:active {
@@ -1003,13 +1130,13 @@ body::before {
 }
 
 .carousel-btn svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
 }
 
 .carousel-dots {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
     justify-content: center;
     flex: 1;
@@ -1164,6 +1291,10 @@ body::before {
     .mobile-carousel {
         display: block !important;
         margin-top: 0 !important;
+    }
+    
+    .desktop-carousel {
+        display: none !important;
     }
     
     .learn-list,

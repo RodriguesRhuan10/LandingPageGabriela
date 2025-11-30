@@ -91,10 +91,19 @@ document.querySelectorAll('.btn-primary, .btn-secondary').forEach(button => {
 });
 
 // ============================================
-// CARROSSEL MOBILE - SEÇÃO GABRIELA
+// CARROSSEL MOBILE - SEÇÃO GABRIELA E RESULTADOS
 // ============================================
 function initMobileCarousel() {
-    const carousel = document.querySelector('.mobile-carousel');
+    // Inicializar todos os carrosséis na página
+    const carousels = document.querySelectorAll('.mobile-carousel');
+    if (carousels.length === 0) return;
+    
+    carousels.forEach(carousel => {
+        initSingleCarousel(carousel);
+    });
+}
+
+function initSingleCarousel(carousel) {
     if (!carousel) return;
 
     const track = carousel.querySelector('.carousel-track');
@@ -119,11 +128,65 @@ function initMobileCarousel() {
     const dots = dotsContainer.querySelectorAll('.carousel-dot');
 
     function updateCarousel() {
-        // Garantir que a transição está ativa
-        track.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        // Para desktop: mostrar múltiplas imagens lado a lado
+        const isDesktop = window.innerWidth >= 1025;
         
-        const translateX = -currentIndex * 100;
-        track.style.transform = `translateX(${translateX}%)`;
+        if (isDesktop && carousel.classList.contains('desktop-carousel')) {
+            // Desktop: mostrar apenas 3 imagens (central + 2 laterais)
+            // Remover todas as classes primeiro
+            slides.forEach(slide => {
+                slide.classList.remove('active', 'prev', 'next');
+            });
+            
+            // Aplicar classes baseado na posição relativa ao slide ativo
+            slides.forEach((slide, index) => {
+                const diff = index - currentIndex;
+                
+                if (diff === 0) {
+                    // Slide ativo (central)
+                    slide.classList.add('active');
+                } else if (diff === -1) {
+                    // Slide anterior (esquerda)
+                    slide.classList.add('prev');
+                } else if (diff === 1) {
+                    // Slide próximo (direita)
+                    slide.classList.add('next');
+                }
+                // Outros slides ficam com opacity 0 (invisíveis)
+            });
+            
+            // Aguardar um frame para o CSS aplicar a mudança de tamanho
+            requestAnimationFrame(() => {
+                // Calcular posição baseado nas larguras reais dos slides visíveis
+                let totalWidth = 0;
+                
+                // Se houver slide anterior (prev), somar sua largura
+                if (currentIndex > 0) {
+                    const prevSlide = slides[currentIndex - 1];
+                    totalWidth += prevSlide.offsetWidth;
+                }
+                
+                // Adicionar metade da largura do slide ativo
+                const activeSlide = slides[currentIndex];
+                totalWidth += activeSlide.offsetWidth / 2;
+                
+                // Centralizar: mover para que o slide ativo fique no centro
+                const container = track.parentElement;
+                const centerX = container.offsetWidth / 2;
+                const translateX = centerX - totalWidth;
+                
+                track.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                track.style.transform = `translateX(${translateX}px)`;
+            });
+        } else {
+            // Mobile: comportamento normal (uma imagem por vez)
+            track.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            const translateX = -currentIndex * 100;
+            track.style.transform = `translateX(${translateX}%)`;
+            
+            // Remover classe active no mobile
+            slides.forEach(slide => slide.classList.remove('active'));
+        }
         
         // Atualizar dots
         dots.forEach((dot, index) => {
@@ -133,6 +196,15 @@ function initMobileCarousel() {
     
     // Inicializar carrossel na posição correta
     updateCarousel();
+    
+    // Atualizar ao redimensionar a janela
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            updateCarousel();
+        }, 250);
+    });
 
     function goToSlide(index) {
         // Garantir que o índice está dentro dos limites
@@ -202,7 +274,7 @@ function initMobileCarousel() {
     // });
 }
 
-// Inicializar carrossel quando o DOM estiver pronto
+// Inicializar carrosséis quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
     initMobileCarousel();
 });
