@@ -79,13 +79,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Adicionar evento de clique nos botões de ação
+// Adicionar evento de clique nos botões de ação - Redirecionar para Kiwify
+const checkoutUrl = 'https://pay.kiwify.com.br/Zjhd39q';
+
 document.querySelectorAll('.btn-primary, .btn-secondary').forEach(button => {
-    button.addEventListener('click', function() {
-        // Aqui você pode adicionar a lógica de redirecionamento para checkout
-        console.log('Botão clicado:', this.textContent);
-        // Exemplo: window.location.href = 'https://checkout.com';
-        // Ou: window.open('https://checkout.com', '_blank');
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        // Redirecionar para a página de checkout
+        window.location.href = checkoutUrl;
     });
 });
 
