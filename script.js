@@ -1,7 +1,7 @@
-// Cronômetro regressivo até 12 de Dezembro de 2025 às 23h59 (Brasília)
+// Cronômetro regressivo até 22 de Dezembro de 2025 às 23h59 (Brasília)
 function initCountdown() {
-    // Data alvo: 12 de Dezembro de 2025 às 23h59 (Brasília - GMT-3)
-    const targetDate = new Date('2025-12-12T23:59:59-03:00').getTime();
+    // Data alvo: 22 de Dezembro de 2025 às 23h59 (Brasília - GMT-3)
+    const targetDate = new Date('2025-12-22T23:59:59-03:00').getTime();
 
     function updateCountdown() {
         const now = new Date().getTime();
@@ -116,6 +116,9 @@ function initSingleCarousel(carousel) {
 
     let currentIndex = 0;
     const totalSlides = slides.length;
+    
+    // Garantir que o track tenha width correto
+    track.style.width = `${totalSlides * 100}%`;
 
     // Criar dots
     slides.forEach((_, index) => {
@@ -128,65 +131,30 @@ function initSingleCarousel(carousel) {
     const dots = dotsContainer.querySelectorAll('.carousel-dot');
 
     function updateCarousel() {
-        // Para desktop: mostrar múltiplas imagens lado a lado
-        const isDesktop = window.innerWidth >= 1025;
+        // Comportamento igual para desktop e mobile: uma imagem por vez
+        // Remover todas as classes de desktop primeiro
+        slides.forEach(slide => {
+            slide.classList.remove('active', 'prev', 'next');
+            slide.style.opacity = '1';
+            slide.style.transform = 'none';
+        });
         
-        if (isDesktop && carousel.classList.contains('desktop-carousel')) {
-            // Desktop: mostrar apenas 3 imagens (central + 2 laterais)
-            // Remover todas as classes primeiro
-            slides.forEach(slide => {
-                slide.classList.remove('active', 'prev', 'next');
-            });
-            
-            // Aplicar classes baseado na posição relativa ao slide ativo
-            slides.forEach((slide, index) => {
-                const diff = index - currentIndex;
-                
-                if (diff === 0) {
-                    // Slide ativo (central)
-                    slide.classList.add('active');
-                } else if (diff === -1) {
-                    // Slide anterior (esquerda)
-                    slide.classList.add('prev');
-                } else if (diff === 1) {
-                    // Slide próximo (direita)
-                    slide.classList.add('next');
-                }
-                // Outros slides ficam com opacity 0 (invisíveis)
-            });
-            
-            // Aguardar um frame para o CSS aplicar a mudança de tamanho
-            requestAnimationFrame(() => {
-                // Calcular posição baseado nas larguras reais dos slides visíveis
-                let totalWidth = 0;
-                
-                // Se houver slide anterior (prev), somar sua largura
-                if (currentIndex > 0) {
-                    const prevSlide = slides[currentIndex - 1];
-                    totalWidth += prevSlide.offsetWidth;
-                }
-                
-                // Adicionar metade da largura do slide ativo
-                const activeSlide = slides[currentIndex];
-                totalWidth += activeSlide.offsetWidth / 2;
-                
-                // Centralizar: mover para que o slide ativo fique no centro
-                const container = track.parentElement;
-                const centerX = container.offsetWidth / 2;
-                const translateX = centerX - totalWidth;
-                
-                track.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-                track.style.transform = `translateX(${translateX}px)`;
-            });
-        } else {
-            // Mobile: comportamento normal (uma imagem por vez)
-            track.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-            const translateX = -currentIndex * 100;
-            track.style.transform = `translateX(${translateX}%)`;
-            
-            // Remover classe active no mobile
-            slides.forEach(slide => slide.classList.remove('active'));
-        }
+        // Calcular largura correta
+        const containerWidth = track.parentElement.offsetWidth || track.parentElement.clientWidth;
+        const slideWidth = containerWidth;
+        
+        // Garantir que cada slide tenha 100% da largura do container
+        slides.forEach(slide => {
+            slide.style.flex = '0 0 100%';
+            slide.style.minWidth = '100%';
+            slide.style.maxWidth = '100%';
+            slide.style.width = `${slideWidth}px`;
+        });
+        
+        track.style.width = `${totalSlides * slideWidth}px`;
+        track.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+        const translateX = -currentIndex * slideWidth;
+        track.style.transform = `translateX(${translateX}px)`;
         
         // Atualizar dots
         dots.forEach((dot, index) => {
@@ -202,6 +170,13 @@ function initSingleCarousel(carousel) {
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
+            // Recalcular larguras
+            const containerWidth = track.parentElement.offsetWidth || track.parentElement.clientWidth;
+            const slideWidth = containerWidth;
+            slides.forEach(slide => {
+                slide.style.width = `${slideWidth}px`;
+            });
+            track.style.width = `${totalSlides * slideWidth}px`;
             updateCarousel();
         }, 250);
     });
