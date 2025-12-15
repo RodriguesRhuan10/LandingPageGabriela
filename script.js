@@ -1,3 +1,34 @@
+// ============================================
+// CONTROLE DE MANUTENÇÃO
+// ============================================
+// Para ATIVAR a página de manutenção: altere para true
+// Para DESATIVAR a página de manutenção: altere para false
+const MAINTENANCE_MODE = true;
+
+// Função para controlar a exibição da página de manutenção
+function checkMaintenanceMode() {
+    const maintenancePage = document.getElementById('maintenance-page');
+    const mainContent = document.getElementById('main-content');
+    
+    if (MAINTENANCE_MODE) {
+        // Mostrar página de manutenção e esconder conteúdo principal
+        if (maintenancePage) maintenancePage.style.display = 'flex';
+        if (mainContent) mainContent.style.display = 'none';
+    } else {
+        // Mostrar conteúdo principal e esconder página de manutenção
+        if (maintenancePage) maintenancePage.style.display = 'none';
+        if (mainContent) mainContent.style.display = 'block';
+    }
+}
+
+// Verificar modo de manutenção quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+    checkMaintenanceMode();
+});
+
+// ============================================
+// CRONÔMETRO REGRESSIVO
+// ============================================
 // Cronômetro regressivo até 22 de Dezembro de 2025 às 23h59 (Brasília)
 function initCountdown() {
     // Data alvo: 22 de Dezembro de 2025 às 23h59 (Brasília - GMT-3)
@@ -67,7 +98,10 @@ const observer = new IntersectionObserver((entries) => {
 
 // Observar elementos para animação
 document.addEventListener('DOMContentLoaded', () => {
-    initCountdown();
+    // Não inicializar countdown se estiver em modo manutenção
+    if (!MAINTENANCE_MODE) {
+        initCountdown();
+    }
     
     const animateElements = document.querySelectorAll('.learn-item, .for-who-item, .benefit-item, .about-content, .quote-box');
     
@@ -82,13 +116,16 @@ document.addEventListener('DOMContentLoaded', () => {
 // Adicionar evento de clique nos botões de ação - Redirecionar para Kiwify
 const checkoutUrl = 'https://pay.kiwify.com.br/Zjhd39q';
 
-document.querySelectorAll('.btn-primary, .btn-secondary').forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        // Redirecionar para a página de checkout
-        window.location.href = checkoutUrl;
+// Só adicionar eventos se não estiver em modo manutenção
+if (!MAINTENANCE_MODE) {
+    document.querySelectorAll('.btn-primary, .btn-secondary').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Redirecionar para a página de checkout
+            window.location.href = checkoutUrl;
+        });
     });
-});
+}
 
 // ============================================
 // CARROSSEL MOBILE - SEÇÃO GABRIELA E RESULTADOS
@@ -251,5 +288,8 @@ function initSingleCarousel(carousel) {
 
 // Inicializar carrosséis quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
-    initMobileCarousel();
+    // Não inicializar carrosséis se estiver em modo manutenção
+    if (!MAINTENANCE_MODE) {
+        initMobileCarousel();
+    }
 });
